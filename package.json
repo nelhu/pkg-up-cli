@@ -1,0 +1,26 @@
+{
+  "name": "pkg-up-cli",
+  "version": "1.0.0",
+  "description": "pkg-up-cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/nelhu/pkg-up-cli.git"
+  },
+  "keywords": [],
+  "author": "nelson hu2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/nelhu/pkg-up-cli/issues"
+  },
+  "homepage": "https://gitlab.com/nelhu/pkg-up-cli#readme",
+  "bin": {
+    "pkg-up-cli": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2"
+  }
+}

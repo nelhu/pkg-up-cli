@@ -45,6 +45,13 @@ const upgrade = argv => {
     encoding: 'utf-8',
     cwd: root,
   };
+
+  // git pull
+  function gitPull() {
+    info('git pull');
+    let { stdout } = spawnSync('git', ['pull'], options);
+    console.log(stdout);
+  }
   // git push
   function gitPush() {
     info(`git push`);
@@ -86,7 +93,6 @@ const upgrade = argv => {
   // return ;
 
   // git status
-
   info('git status')
   let { stdout: data1  } = spawnSync('git', ['status'], options);
   console.log(data1);
@@ -96,11 +102,9 @@ const upgrade = argv => {
   let { stdout: data2 } = spawnSync('git', ['checkout', 'master'], options);
   console.log(data2);
 
+  // git pull
+  gitPull();
 
-  // // git pull
-  info('git pull');
-  let { stdout: data3 } = spawnSync('git', ['pull'], options);
-  console.log(data3);
 
   // git branch branch_name master
   info(`git branch ${branch_name} master`);
@@ -126,8 +130,13 @@ const upgrade = argv => {
 
   // git commit -m 'comment' -a
   info(`git commit -m ${_comment} -a`);
-  let { stdout: data7 } = spawnSync('git', ['commit', '-m'], options);
-  success(data7, `changes were committed!`)
+  let { stdout: data7, stderr: err1 } = spawnSync('git', ['commit', '-m', `fix: ${_comment}`, '-a'], options);
+  if (data7) {
+    success(data7, `changes were committed!`)
+  }
+  if (err1) {
+    error(err1)
+  }
 
   // git push
   gitPush();
@@ -135,6 +144,8 @@ const upgrade = argv => {
   if (mergeQa) {
     // git checkout qa
     gitCheckoutBranch('qa')
+    // git pull
+    gitPull();
     // git merge branch_name
     gitMergeBranch(branch_name, 'qa');
     // git push
@@ -144,11 +155,13 @@ const upgrade = argv => {
   if (mergeSim) {
     // git checkout sim
     gitCheckoutBranch('sim');
+    // git pull
+    gitPull();
     // git merge branch_name
     gitMergeBranch(branch_name, 'sim');
     // git push
     gitPush();
   }
-  success(null, 'job succeeded');
+  success(null, '--job succeeded--');
 }
 module.exports = upgrade;

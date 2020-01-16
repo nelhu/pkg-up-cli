@@ -31,6 +31,34 @@ function logParams(argv) {
   })
 }
 
+  // git pull
+  function gitPull(options) {
+    info('git pull');
+    let { stdout } = spawnSync('git', ['pull'], options);
+    console.log(stdout);
+  }
+
+  // git push
+  function gitPush(options) {
+    info(`git push`);
+    let { stdout } = spawnSync('git', ['push'], options);
+    success(stdout, `pushed to origin`)
+  }
+
+  // git checkout branch
+  function gitCheckoutBranch(branch, options) {
+    info(`git checkout ${branch}`);
+    let { stdout } = spawnSync('git', ['checkout', branch], options);
+    success(stdout, `in ${branch}!`)
+  }
+
+  // git merge branch
+  function gitMergeBranch(branch, target_branch, options) {
+    info(`git merge ${branch}`);
+    let { stdout } = spawnSync('git', ['merge', branch], options);
+    success(stdout, `branch ${branch} merged to ${target_branch} successfully`)
+  }
+
 const upgrade = argv => {
   const {
     root,
@@ -45,33 +73,6 @@ const upgrade = argv => {
     encoding: 'utf-8',
     cwd: root,
   };
-
-  // git pull
-  function gitPull() {
-    info('git pull');
-    let { stdout } = spawnSync('git', ['pull'], options);
-    console.log(stdout);
-  }
-  // git push
-  function gitPush() {
-    info(`git push`);
-    let { stdout } = spawnSync('git', ['push'], options);
-    success(stdout, `pushed to origin`)
-  }
-
-  // git checkout branch
-  function gitCheckoutBranch(branch) {
-    info(`git checkout ${branch}`);
-    let { stdout } = spawnSync('git', ['checkout', branch], options);
-    success(stdout, `in ${branch}!`)
-  }
-
-  // git merge branch
-  function gitMergeBranch(branch, target_branch) {
-    info(`git merge ${branch}`);
-    let { stdout } = spawnSync('git', ['merge', branch], options);
-    success(stdout, `branch ${branch} merged to ${target_branch} successfully`)
-  }
 
   // check
   if (!root) {
@@ -103,7 +104,7 @@ const upgrade = argv => {
   console.log(data2);
 
   // git pull
-  gitPull();
+  gitPull(options);
 
 
   // git branch branch_name master
@@ -117,7 +118,7 @@ const upgrade = argv => {
   console.log(data5);
 
   // git checkout branch
-  gitCheckoutBranch(branch_name);
+  gitCheckoutBranch(branch_name, options);
 
   // // yarn add package_name
   info(`yarn add ${package_name}`);
@@ -139,29 +140,98 @@ const upgrade = argv => {
   }
 
   // git push
-  gitPush();
+  gitPush(options);
 
   if (mergeQa) {
     // git checkout qa
-    gitCheckoutBranch('qa')
+    gitCheckoutBranch('qa', options)
     // git pull
-    gitPull();
+    gitPull(options);
     // git merge branch_name
-    gitMergeBranch(branch_name, 'qa');
+    gitMergeBranch(branch_name, 'qa', options);
     // git push
-    gitPush();
+    gitPush(options);
   }
 
   if (mergeSim) {
     // git checkout sim
-    gitCheckoutBranch('sim');
+    gitCheckoutBranch('sim', options);
     // git pull
-    gitPull();
+    gitPull(options);
     // git merge branch_name
-    gitMergeBranch(branch_name, 'sim');
+    gitMergeBranch(branch_name, 'sim', options);
     // git push
-    gitPush();
+    gitPush(options);
   }
   success(null, '--job succeeded--');
 }
-module.exports = upgrade;
+
+const upgradePeppaTeacherLauncher = argv => {
+  const {
+    mergeQa,
+    mergeSim,
+  } = argv;
+  console.log(argv);
+
+  const branch_name = 'feature/EDU-14658-10';
+  const comment = 'fix: upgrade launcher';
+  const options = {
+    encoding: 'utf-8',
+    cwd: '/Users/huxuezhi/Documents/dev/work/projects/peppa-teacher',
+  };
+  // git status
+  info('git status')
+  let { stdout: data1  } = spawnSync('git', ['status'], options);
+  console.log(data1);
+
+  // git checkout master
+  info(`git checkout ${branch_name}`);
+  let { stdout: data2 } = spawnSync('git', ['checkout', branch_name], options);
+  console.log(data2);
+
+  // git pull
+  info('git pull origin master');
+  let { stdout: data3 } = spawnSync('git', ['pull', 'origin', 'master'], options);
+  console.log(data3);
+
+  // yarn add package_name
+  info(`yarn add @huohua/classroom-launcher`);
+  let { stdout: data6 } = spawnSync('yarn', ['add', '@huohua/native-api'], options);
+  success(data6, `@huohua/classroom-launcher resolved!`)
+
+  // git add .
+  info(`git add .`);
+  let { stdout: dataX } = spawnSync('git', ['add', '.'], options);
+
+  // git commit -m 'comment' -a
+  info(`git commit -m ${comment} -a`);
+  let { stdout: data7, stderr: err1 } = spawnSync('git', ['commit', '-m', comment, '-a'], options);
+
+  // merge qa
+  if (mergeQa) {
+    // git checkout qa
+    gitCheckoutBranch('qa')
+    // git pull
+    gitPull(options);
+    // git merge branch_name
+    gitMergeBranch(branch_name, 'qa', options);
+    // git push
+    gitPush(options);
+  }
+  if (mergeSim) {
+    // git checkout sim
+    gitCheckoutBranch('sim', options);
+    // git pull
+    gitPull(options);
+    // git merge branch_name
+    gitMergeBranch(branch_name, 'sim', options);
+    // git push
+    gitPush(options);
+  }
+  success(null, `--${mergeQa ? 'qa' : (mergeSim ? 'sim' : 'job') } succeeded--`);
+}
+
+module.exports = {
+  upgrade,
+  upgradePeppaTeacherLauncher
+};

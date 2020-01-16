@@ -174,6 +174,7 @@ const upgradePeppaTeacherLauncher = argv => {
   console.log(argv);
 
   const branch_name = 'feature/EDU-14658-10';
+  const package_name = '@huohua/classroom-launcher';
   const comment = 'fix: upgrade launcher';
   const options = {
     encoding: 'utf-8',
@@ -195,9 +196,9 @@ const upgradePeppaTeacherLauncher = argv => {
   console.log(data3);
 
   // yarn add package_name
-  info(`yarn add @huohua/classroom-launcher`);
-  let { stdout: data6 } = spawnSync('yarn', ['add', '@huohua/native-api'], options);
-  success(data6, `@huohua/classroom-launcher resolved!`)
+  info(`yarn add ${package_name}`);
+  let { stdout: data6 } = spawnSync('yarn', ['add', package_name], options);
+  success(data6, `${package_name} resolved!`)
 
   // git add .
   info(`git add .`);

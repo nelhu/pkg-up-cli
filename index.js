@@ -5,7 +5,7 @@ const { upgrade, upgradePeppaTeacherLauncher }  = require('./src');
 program
   .name('pkg-up-cli')
   .description('pkg-up-cli -q -s -r root_path -b branch -p package -m comment or pkg-up-cli -L -q -s')
-  .version('0.0.1', '-v, --version', 'print version')
+  .version('1.0.3', '-v, --version', 'print version')
   .option('-r, --root <root>', 'git project root path')
   .option('-b, --branch <branch>', 'branch name which will be created and working')
   .option('-p, --pkg <pkg>', 'package name which will upgrade')

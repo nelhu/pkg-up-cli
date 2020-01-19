@@ -178,6 +178,7 @@ const upgradePeppaTeacherLauncher = async (argv) => {
   const {
     mergeQa,
     mergeSim,
+    peppaTeacherLauncher,
   } = argv;
   console.log(argv);
 
@@ -191,35 +192,43 @@ const upgradePeppaTeacherLauncher = async (argv) => {
   // git status
   gitStatus(options);
 
-  // git checkout master
-  info(`git checkout ${branch_name}`);
-  let { stdout: data2 } = spawnSync('git', ['checkout', branch_name], options);
-  console.log(data2);
+  if (peppaTeacherLauncher) {
+    // git checkout master
+    info(`git checkout ${branch_name}`);
+    let { stdout: data2 } = spawnSync('git', ['checkout', branch_name], options);
+    console.log(data2);
 
-  // git pull
-  info('git pull origin master');
-  let { stdout: data3 } = spawnSync('git', ['pull', 'origin', 'master'], options);
-  console.log(data3);
+    // git pull
+    info('git pull origin master');
+    let { stdout: data3 } = spawnSync('git', ['pull', 'origin', 'master'], options);
+    console.log(data3);
 
-  // yarn add package_name
-  info(`yarn add ${package_name}`);
-  let { stdout: data6 } = spawnSync('yarn', ['add', package_name], options);
-  success(data6, `${package_name} resolved!`)
+    // yarn add package_name
+    info(`yarn add ${package_name}`);
+    let { stdout: data6 } = spawnSync('yarn', ['add', package_name], options);
+    success(data6, `${package_name} resolved!`)
 
-  // git add .
-  info(`git add .`);
-  let { stdout: dataX } = spawnSync('git', ['add', '.'], options);
+    // git add .
+    info(`git add .`);
+    let { stdout: dataX } = spawnSync('git', ['add', '.'], options);
+    success(dataX)
 
-  // git commit -m 'comment' -a
-  info(`git commit -m ${comment} -a`);
-  let { stdout: data7, stderr: err1 } = spawnSync('git', ['commit', '-m', comment, '-a'], options);
+    // git commit -m 'comment' -a
+    info(`git commit -m ${comment} -a`);
+    let { stdout: data7, stderr: err1 } = spawnSync('git', ['commit', '-m', comment, '-a'], options);
+    err1 && error(err1);
+    await delay(3000);
+    data7 && success(data7, `committed!`)
+  }
 
   // merge qa
   if (mergeQa) {
     // git checkout qa
-    gitCheckoutBranch('qa')
-    await delay(2000);
+    info(`git checkout qa`);
+    let { stdout: dataXX } = spawnSync('git', ['checkout', 'qa'], options);
+    console.log(dataXX);
     gitStatus(options);
+
     // git pull
     gitPull(options);
     // git merge branch_name
@@ -228,10 +237,13 @@ const upgradePeppaTeacherLauncher = async (argv) => {
     gitStatus(options);
     // git push
     gitPush(options);
+    success(null, `--qa succeeded--`);
   }
   if (mergeSim) {
     // git checkout sim
-    gitCheckoutBranch('sim', options);
+    info(`git checkout sim`);
+    let { stdout: dataXX } = spawnSync('git', ['checkout', 'sim'], options);
+    console.log(dataXX);
     await delay(2000);
     gitStatus(options);
     // git pull
@@ -240,8 +252,8 @@ const upgradePeppaTeacherLauncher = async (argv) => {
     gitMergeBranch(branch_name, 'sim', options);
     // git push
     gitPush(options);
+    success(null, `--sim succeeded--`);
   }
-  success(null, `--${mergeQa ? 'qa' : (mergeSim ? 'sim' : 'job') } succeeded--`);
 }
 
 module.exports = {

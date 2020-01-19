@@ -31,6 +31,13 @@ function logParams(argv) {
   })
 }
 
+  // git status
+  function gitStatus(options) {
+      // git status
+  info('git status')
+  let { stdout: data1  } = spawnSync('git', ['status'], options);
+  console.log(data1);
+  }
   // git pull
   function gitPull(options) {
     info('git pull');
@@ -181,9 +188,7 @@ const upgradePeppaTeacherLauncher = argv => {
     cwd: '/Users/huxuezhi/Documents/dev/work/projects/peppa-teacher',
   };
   // git status
-  info('git status')
-  let { stdout: data1  } = spawnSync('git', ['status'], options);
-  console.log(data1);
+  gitStatus(options);
 
   // git checkout master
   info(`git checkout ${branch_name}`);
@@ -216,6 +221,8 @@ const upgradePeppaTeacherLauncher = argv => {
     gitPull(options);
     // git merge branch_name
     gitMergeBranch(branch_name, 'qa', options);
+    // git status
+    gitStatus(options);
     // git push
     gitPush(options);
   }

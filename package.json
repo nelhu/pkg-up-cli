@@ -1,6 +1,6 @@
 {
   "name": "pkg-up-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "pkg-up-cli",
   "main": "index.js",
   "scripts": {

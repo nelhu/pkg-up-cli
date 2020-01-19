@@ -173,7 +173,8 @@ const upgrade = argv => {
   success(null, '--job succeeded--');
 }
 
-const upgradePeppaTeacherLauncher = argv => {
+const delay = ms => new Promise(res => setTimeout(res, ms));
+const upgradePeppaTeacherLauncher = async (argv) => {
   const {
     mergeQa,
     mergeSim,
@@ -217,6 +218,8 @@ const upgradePeppaTeacherLauncher = argv => {
   if (mergeQa) {
     // git checkout qa
     gitCheckoutBranch('qa')
+    await delay(2000);
+    gitStatus(options);
     // git pull
     gitPull(options);
     // git merge branch_name
@@ -229,6 +232,8 @@ const upgradePeppaTeacherLauncher = argv => {
   if (mergeSim) {
     // git checkout sim
     gitCheckoutBranch('sim', options);
+    await delay(2000);
+    gitStatus(options);
     // git pull
     gitPull(options);
     // git merge branch_name
